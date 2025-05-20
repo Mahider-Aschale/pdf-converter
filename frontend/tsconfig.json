@@ -1,0 +1,31 @@
+ {
+  "compilerOptions": {
+    "target": "ESNext",  // Set target to ESNext to support modern JS features
+    "module": "ESNext",  // Use ESNext modules
+    "moduleResolution": "Node",  // Use Node resolution strategy for modules
+    "esModuleInterop": true,  // Enable interop between CommonJS and ES Modules
+    "allowSyntheticDefaultImports": true,  // Allow default imports for non-ESM modules
+    "jsx": "react-jsx",  // Use JSX with React
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "components/*": ["src/components/*"],
+      "utils/*": ["src/lib/utils/*"],
+      "ui/*": ["src/components/ui/*"],
+      "lib/*": ["src/lib/*"],
+      "hooks/*": ["src/hooks/*"]
+    }
+    
+  } ,
+  "include": [
+    "src", 
+    "postcss.config.ts"  // Add postcss.config.ts to the included files
+  ]
+}
+  /* "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]  */
+
