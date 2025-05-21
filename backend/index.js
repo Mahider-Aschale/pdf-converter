@@ -6,7 +6,7 @@ const libre = require('libreoffice-convert');
 const path = require('path');
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT ||5000;
 
 // Create uploads folder if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
