@@ -23,6 +23,9 @@ app.use(cors( {
 }));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('PDF Converter API is running');
+});
 // Setup multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -62,6 +65,7 @@ app.post('/api/convert/ppt-to-pdf', upload.single('file'), (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename=converted.pdf');
     res.send(done);
   });
+  
 });
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
