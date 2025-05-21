@@ -29,7 +29,7 @@ export default function PdfConverter() {
     const formData = new FormData();
     formData.append("file", docxFile);
 
-    const response = await axios.post("https://pdf-converter-api-d2sg.onrender.com/api/convert/docx-to-pdf", formData, {
+    const response = await axios.post("https://pdf-converter-vlyb.onrender.com/api/convert/docx-to-pdf", formData, {
       responseType: "blob",
     });
 
@@ -51,7 +51,7 @@ export default function PdfConverter() {
     const formData = new FormData();
     formData.append("file", pptFile);
 
-    const response = await axios.post("https://pdf-converter-api-d2sg.onrender.com/api/convert/docx-to-pdf", formData, {
+    const response = await axios.post("https://pdf-converter-vlyb.onrender.com/api/convert/docx-to-pdf", formData, {
       responseType: "blob",
     });
 
