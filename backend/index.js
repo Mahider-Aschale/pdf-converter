@@ -15,7 +15,12 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Middleware
-app.use(cors());
+app.use(cors( {
+  origin: 'http://pdf-converter-nine.vercel.app',
+  methods: ['POST', 'GET'],
+  credentials: true
+
+}));
 app.use(express.json());
 
 // Setup multer for file uploads
