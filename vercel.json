@@ -1,27 +1,38 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "frontend/package.json",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "dist"
-        }
-      },
-      {
-        "src": "backend/index.js",  
-        "use": "@vercel/node"
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
       }
-    ],
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "backend/index.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "frontend/dist/$1"
-      }
-    ]
-  }
-  
+    },
+    {
+      "src": "backend/api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "functions": {
+    "backend/api/convert.js": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/convert.js"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/api/convert.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/dist/$1"
+    }
+  ]
+}
