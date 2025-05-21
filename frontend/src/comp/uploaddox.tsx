@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import axios from 'axios';
 
 export default function PdfConverter() {
   const [docxFile, setDocxFile] = useState<File | null>(null);
@@ -28,13 +29,14 @@ export default function PdfConverter() {
     const formData = new FormData();
     formData.append("file", docxFile);
 
-    const response = await fetch("/api/convert/docx-to-pdf", {
-      method: "POST",
-      body: formData,
+    const response = await axios.post("https://pdf-converter-api-d2sg.onrender.com/api/convert/docx-to-pdf", formData, {
+      responseType: "blob",
     });
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    
+
+  
+    const url = window.URL.createObjectURL(response.data);
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `${docxFile.name}.pdf`);
@@ -49,13 +51,12 @@ export default function PdfConverter() {
     const formData = new FormData();
     formData.append("file", pptFile);
 
-    const response = await fetch("/api/convert/ppt-to-pdf", {
-      method: "POST",
-      body: formData,
+    const response = await axios.post("https://pdf-converter-api-d2sg.onrender.com/api/convert/docx-to-pdf", formData, {
+      responseType: "blob",
     });
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    
+    const url = window.URL.createObjectURL(response.data);
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `${pptFile.name}.pdf`);
