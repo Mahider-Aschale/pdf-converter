@@ -63,6 +63,8 @@ app.post('/api/convert/ppt-to-pdf', upload.single('file'), (req, res) => {
     res.send(done);
   });
 });
-module.exports = app;
-module.exports.handler = serverless(app);
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+
 
