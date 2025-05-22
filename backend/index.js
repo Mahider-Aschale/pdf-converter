@@ -84,7 +84,7 @@ app.post('/api/convert/docx-to-pdf', upload.single('file'), (req, res) => {
 app.post('/api/convert/ppt-to-pdf', upload.single('file'), (req, res) => {
   const filePath = req.file.path;
   const ext = path.extname(req.file.originalname).toLowerCase();
-  if (ext !== '.ppt') {
+  if (ext !== '.ppt'&& ext !== '.pptx') {
     fs.unlinkSync(filePath);
     return res.status(400).send('Invalid file type. Please upload a PPT file.');
   }
