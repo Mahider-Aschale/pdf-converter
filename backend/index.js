@@ -9,7 +9,9 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-const convertApiSecret = process.env.secret_TUGLYp4Gk1l8tZqd;
+CONVERT_API_SECRET=secret_TUGLYp4Gk1l8tZqd
+const convertApiSecret = process.env.CONVERT_API_SECRET;
+
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');
