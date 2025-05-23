@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-const convertApiSecret = process.env.CONVERT_API_SECRET; // 👉 Put your secret in .env
+const convertApiSecret = process.env.secret_TUGLYp4Gk1l8tZqd;
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');
@@ -17,7 +17,7 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 // Middleware
 app.use(cors({
-  origin: 'https://pdf-converter-nine.vercel.app', // 🔒 Update if domain changes
+  origin: 'https://pdf-converter-nine.vercel.app', 
   methods: ['POST', 'GET'],
   credentials: true
 }));
@@ -75,7 +75,7 @@ const handleConversion = async (req, res, type) => {
     pdfResponse.data.pipe(res);
     pdfResponse.data.on('end', () => {
       fs.unlinkSync(filePath);
-      console.log(`🧹 Cleaned up: ${filePath}`);
+      console.log(`Cleaned up: ${filePath}`);
     });
 
   } catch (err) {
