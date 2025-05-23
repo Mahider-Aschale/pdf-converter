@@ -64,6 +64,11 @@ const handleConversion = async (req, res, type) => {
       headers: form.getHeaders()
     });
 
+    if (!convertResponse.data || !convertResponse.data.Files || !convertResponse.data.Files[0].Url) {
+      console.error('❌ No download URL returned:', convertResponse.data);
+      return res.status(500).send('No download URL returned from ConvertAPI');
+    }
+    
     const downloadUrl = convertResponse?.data?.Files?.[0]?.Url;
     if (!downloadUrl) {
       throw new Error('No download URL returned from ConvertAPI');
