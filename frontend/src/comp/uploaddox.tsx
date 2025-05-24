@@ -42,7 +42,7 @@ export default function PdfConverter() {
     const url = window.URL.createObjectURL(response.data);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `${docxFile.name}.pdf`);
+    link.setAttribute("download", docxFile.name.replace(/\.[^/.]+$/, "") + ".pdf");
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -53,12 +53,15 @@ export default function PdfConverter() {
 
     const formData = new FormData();
     formData.append("file", pptFile);
-
-    const response = await axios.post("https://pdf-converter-serverside.onrender.com/api/convert/docx-to-pdf", formData, {
-      responseType: "blob",
-    });
-
-    
+    const response = await axios.post(
+      "https://pdf-converter-serverside.onrender.com/api/convert/ppt-to-pdf",formData,
+      {
+        responseType: "blob",
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }
+    );    
     const url = window.URL.createObjectURL(response.data);
     const link = document.createElement("a");
     link.href = url;
