@@ -64,8 +64,10 @@ const handleConversion = async (req, res, type) => {
     const convertResponse = await axios.post(convertApiUrl, form, {
       headers: form.getHeaders()
     });
+    console.log('🔍 ConvertAPI full response:', convertResponse.data);
 
-    const downloadUrl = convertResponse?.data?.Files?.[0]?.Url;
+    const downloadUrl = convertResponse.data.Files?.[0]?.Url || convertResponse.data.files?.[0]?.Url;
+
     if (!downloadUrl) throw new Error('No download URL returned from ConvertAPI');
 
     const pdfResponse = await axios.get(downloadUrl, { responseType: 'stream' });

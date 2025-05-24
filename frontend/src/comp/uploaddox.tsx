@@ -31,6 +31,9 @@ export default function PdfConverter() {
 
     const response = await axios.post("https://pdf-converter-serverside.onrender.com/api/convert/docx-to-pdf", formData, {
       responseType: "blob",
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
     });
 
     
