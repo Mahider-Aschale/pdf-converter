@@ -11,19 +11,19 @@ const app = express();
 const port = process.env.PORT || 5000;
 const convertApiSecret = process.env.CONVERT_API_SECRET;
 
-// Ensure uploads directory exists
+
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-// Middleware
+// connect with frontend to vercel
 app.use(cors({
-  origin: 'https://pdf-converter-nine.vercel.app', // Replace with your frontend URL
+  origin: 'https://pdf-converter-nine.vercel.app', 
   methods: ['POST', 'GET'],
   credentials: true
 }));
 app.use(express.json());
 
-// Multer setup for file uploads
+// setup for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
@@ -34,7 +34,7 @@ const upload = multer({ storage });
 const safeDeleteFile = (filePath) => {
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
-    console.log(`🧹 Deleted file: ${filePath}`);
+    console.log(`Deleted file: ${filePath}`);
   }
 };
 
@@ -65,7 +65,7 @@ const handleConversion = async (req, res, type) => {
       headers: form.getHeaders()
     });
 
-    console.log('🔍 ConvertAPI response:', convertResponse.data);
+    console.log('ConvertAPI response:', convertResponse.data);
 
     const file = convertResponse.data.Files?.[0];
     const downloadUrl = file?.Url;
@@ -93,7 +93,7 @@ const handleConversion = async (req, res, type) => {
     }
 
   } catch (err) {
-    console.error('❌ Conversion error:', err.message || err);
+    console.error(' Conversion error:', err.message || err);
     safeDeleteFile(filePath);
     res.status(500).send('Conversion failed. Please try again later.');
   }
@@ -101,7 +101,7 @@ const handleConversion = async (req, res, type) => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.send('📄 PDF Converter API is running');
+  res.send(' PDF Converter API is running');
 });
 
 app.post('/api/convert/docx-to-pdf', upload.single('file'), (req, res) => {
@@ -114,5 +114,5 @@ app.post('/api/convert/ppt-to-pdf', upload.single('file'), (req, res) => {
 
 // Start server
 app.listen(port, () => {
-  console.log(`✅ Server running at http://localhost:${port}`);
+  console.log(` Server running at http://localhost:${port}`);
 });
