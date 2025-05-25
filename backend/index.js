@@ -17,7 +17,7 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 // Middleware
 app.use(cors({
-  origin: 'https://pdf-converter-nine.vercel.app', // Your frontend URL
+  origin: 'https://pdf-converter-nine.vercel.app', // Replace with your frontend URL
   methods: ['POST', 'GET'],
   credentials: true
 }));
@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// --- Helper function to delete file safely ---
+// Helper: Delete file safely
 const safeDeleteFile = (filePath) => {
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
@@ -38,14 +38,13 @@ const safeDeleteFile = (filePath) => {
   }
 };
 
-// --- Conversion handler ---
+// Handle file conversion
 const handleConversion = async (req, res, type) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
 
   const filePath = req.file.path;
   const ext = path.extname(req.file.originalname).toLowerCase();
 
-  // Allowed extensions by type
   const validExts = {
     docx: ['.docx'],
     ppt: ['.ppt', '.pptx']
@@ -57,47 +56,52 @@ const handleConversion = async (req, res, type) => {
   }
 
   try {
-    // Prepare form-data for ConvertAPI
     const form = new FormData();
     form.append('File', fs.createReadStream(filePath));
 
     const convertApiUrl = `https://v2.convertapi.com/convert/${type}/to/pdf?Secret=${convertApiSecret}`;
 
-    // Send conversion request
     const convertResponse = await axios.post(convertApiUrl, form, {
       headers: form.getHeaders()
     });
 
     console.log('🔍 ConvertAPI response:', convertResponse.data);
 
-    // Extract download URL from response
-    const downloadUrl = convertResponse.data.Files?.[0]?.Url || convertResponse.data.files?.[0]?.Url;
+    const file = convertResponse.data.Files?.[0];
+    const downloadUrl = file?.Url;
+    const fileDataBase64 = file?.FileData;
 
-    if (!downloadUrl) throw new Error('No download URL returned from ConvertAPI');
+    if (downloadUrl) {
+      const pdfResponse = await axios.get(downloadUrl, { responseType: 'stream' });
 
-    // Download the converted PDF as stream
-    const pdfResponse = await axios.get(downloadUrl, { responseType: 'stream' });
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=converted.pdf');
 
-    // Set response headers for PDF download
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=converted.pdf');
+      pdfResponse.data.pipe(res);
+      pdfResponse.data.on('end', () => safeDeleteFile(filePath));
 
-    // Pipe the PDF stream directly to the client response
-    pdfResponse.data.pipe(res);
+    } else if (fileDataBase64) {
+      const buffer = Buffer.from(fileDataBase64, 'base64');
 
-    // Clean up uploaded file once streaming ends
-    pdfResponse.data.on('end', () => safeDeleteFile(filePath));
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=converted.pdf');
+
+      res.send(buffer);
+      safeDeleteFile(filePath);
+    } else {
+      throw new Error('Neither Url nor FileData found in ConvertAPI response.');
+    }
 
   } catch (err) {
-    console.error('Conversion error:', err.message || err);
+    console.error('❌ Conversion error:', err.message || err);
     safeDeleteFile(filePath);
     res.status(500).send('Conversion failed. Please try again later.');
   }
 };
 
-// --- Routes ---
+// Routes
 app.get('/', (req, res) => {
-  res.send(' PDF Converter API is running');
+  res.send('📄 PDF Converter API is running');
 });
 
 app.post('/api/convert/docx-to-pdf', upload.single('file'), (req, res) => {
@@ -108,7 +112,7 @@ app.post('/api/convert/ppt-to-pdf', upload.single('file'), (req, res) => {
   handleConversion(req, res, 'ppt');
 });
 
-// --- Start server ---
+// Start server
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);
 });
