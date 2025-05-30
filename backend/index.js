@@ -1,17 +1,17 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const FormData = require('form-data');
-require('dotenv').config();
+import express from 'express'
+import  multer from'multer' //handle file uploads 
+import  cors from 'cors';//allows cross-origin requests 
+import fs from'fs';//file system
+import  path from'path'//handle file path
+import axios from'axios';//for http request
+import FormData from'form-data';//builds the file to send to ConvertAPI
+require('dotenv').config();//loads secrets from .env file
 
 const app = express();
 const port = process.env.PORT || 5000;
 const convertApiSecret = process.env.CONVERT_API_SECRET;
 
-
+//Creates uploads Used to temporarily store uploaded files.
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
@@ -30,7 +30,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Helper: Delete file safely
+
+// Helper  Delete file safely
 const safeDeleteFile = (filePath) => {
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
